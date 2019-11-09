@@ -1,0 +1,22 @@
+{
+  "name": "driftframe-twitch-bot",
+  "version": "1.0.0",
+  "description": "A Twitch bot for running driftframe races",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pcat0/Driftframe-Twitch-Bot.git"
+  },
+  "author": "Patrick Ambli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Pcat0/Driftframe-Twitch-Bot/issues"
+  },
+  "homepage": "https://github.com/Pcat0/Driftframe-Twitch-Bot#readme",
+  "dependencies": {
+    "electron": "^7.1.1"
+  }
+}
