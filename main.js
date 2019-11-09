@@ -25,7 +25,7 @@ function createMainWindow(){
     });
 
 
-    window.loadFile('assets/ui/main.html');
+    window.loadFile('src/main.html');
 
     //Quit app when closed
     window.on('close', app.quit);
