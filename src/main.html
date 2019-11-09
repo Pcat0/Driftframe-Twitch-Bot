@@ -1,12 +1,44 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Driftframe twitch bot</title>
-    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-  </body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Driftframe twitch bot</title>
+        <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    </head>
+    <body>
+        <ul id="racerList" style="list-style-type:none;">
+            <li>
+                <div>
+                    <H2>Racer List</H2>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <p>You</p>
+                </div>
+            </li>
+            <li slot1>
+                <div>
+                    <p>A</p>
+                </div>
+            </li>
+            <li slot2>
+                <div>
+                    <p>B</p>
+                </div>
+            </li>
+            <li slot3>
+                <div>
+                    <p>C</p>
+                </div>
+            </li>
+        </ul>
+    </body>
+    <script>
+        const racerListEl = document.getElementById("racerList");
+        function setSlot(){
+            
+        }
+    </script>
 </html>
