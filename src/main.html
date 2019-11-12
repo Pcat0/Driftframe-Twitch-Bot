@@ -40,7 +40,8 @@
 
         const racerListEl = document.getElementById("racerList");
         
-
+        
+        
         ipcRenderer.on("updateList", function(event, racers) {
             //TODO: improve alot
             for(let i = 0; i < 3; i++){

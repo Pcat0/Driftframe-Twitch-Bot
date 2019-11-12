@@ -1,29 +1,31 @@
 const { app, BrowserWindow, Menu, ipcMain} = require('electron');
 const path = require('path');
 
+const readline = require('readline');
+
+
+
 const _IconPath = path.join(__dirname, 'assets', 'icons');
 
 var mainWindow;
-//TODO: add handler functions
-var raceQueue = [
-    {
-        name: "bob",
-    },
-    {
-        name: "pcat",
-    },
-    {
-        name: "Xandy",
-    },
-    {
-        name: "name",
-    },
-    {
-        name: "jake"
-    }
-];
 
-ipcMain.on("queue:next", function(event, first, last){
+//TODO: add handler functions
+var raceQueue = [];
+function add(racer){
+    raceQueue.push(racer);
+    updateList();
+}
+function updateList(){
+    mainWindow.webContents.send("updateList", raceQueue.slice(0,4));
+}
+
+
+function Racer(tName, ign){
+    this.tName = tName;
+    this.ign = ign;
+}
+
+ipcMain.on("queue:next", function(event){
     event.reply("updateList", raceQueue.slice(0,4));
 });
 
@@ -80,6 +82,7 @@ function createMainWindow(){
 
 
 app.on('ready', function () {
+
     mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
     Menu.setApplicationMenu(mainMenu);
 
