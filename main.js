@@ -1,38 +1,31 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain} = require('electron');
 const path = require('path');
 
 const _IconPath = path.join(__dirname, 'assets', 'icons');
 
 var mainWindow;
+//TODO: add handler functions
+var raceQueue = [
+    {
+        name: "bob",
+    },
+    {
+        name: "pcat",
+    },
+    {
+        name: "Xandy",
+    },
+    {
+        name: "name",
+    },
+    {
+        name: "jake"
+    }
+];
 
-app.on('ready', function () {
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-    Menu.setApplicationMenu(mainMenu);
-
-    mainWindow = createMainWindow();
-
-
-    
+ipcMain.on("queue:next", function(event, first, last){
+    event.reply("updateList", raceQueue.slice(0,4));
 });
-
-function createMainWindow(){
-    //TODO look into preload.js
-    var window = new BrowserWindow({
-        icon: path.join(_IconPath, 'icon1024.png'),
-        webPreferences: {
-            nodeIntegration: true
-        }
-    });
-
-
-    window.loadFile('src/main.html');
-
-    //Quit app when closed
-    window.on('close', app.quit);
-    return window;
-}
-
-
 
 
 
@@ -67,3 +60,31 @@ const mainMenuTemplate = [
         ]
     }
 ];
+
+function createMainWindow(){
+    //TODO look into preload.js
+    var window = new BrowserWindow({
+        icon: path.join(_IconPath, 'icon1024.png'),
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+
+
+    window.loadFile('src/main.html');
+
+    //Quit app when closed
+    window.on('close', app.quit);
+    return window;
+}
+
+
+app.on('ready', function () {
+    mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+    Menu.setApplicationMenu(mainMenu);
+
+    mainWindow = createMainWindow();
+
+
+    
+});

@@ -18,27 +18,39 @@
                     <p>You</p>
                 </div>
             </li>
-            <li slot1>
+            <li slot = "1">
                 <div>
-                    <p>A</p>
+                    <p></p>
                 </div>
             </li>
-            <li slot2>
+            <li slot = "2">
                 <div>
-                    <p>B</p>
+                    <p></p>
                 </div>
             </li>
-            <li slot3>
+            <li slot = "3">
                 <div>
-                    <p>C</p>
+                    <p></p>
                 </div>
             </li>
         </ul>
     </body>
     <script>
+        const {ipcRenderer} = require('electron'); 
+
         const racerListEl = document.getElementById("racerList");
-        function setSlot(){
+        
+
+        ipcRenderer.on("updateList", function(event, racers) {
+            //TODO: improve alot
+            for(let i = 0; i < 3; i++){
+                let slot = racerListEl.querySelector(`[slot="${i+1}"]`);
+                let racer = racers[i];
+                slot.innerHTML = `<div><p>${racer ? racer.name : '<i>Open</i>'}</p></div>`
+            }
             
-        }
+        });
+        
+        ipcRenderer.send("queue:next");
     </script>
 </html>
