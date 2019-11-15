@@ -47,7 +47,7 @@
             for(let i = 0; i < 3; i++){
                 let slot = racerListEl.querySelector(`[slot="${i+1}"]`);
                 let racer = racers[i];
-                slot.innerHTML = `<div><p>${racer ? racer.name : '<i>Open</i>'}</p></div>`
+                slot.innerHTML = `<div><p>${racer ? racer.tName : '<i>Open</i>'}</p></div>`
             }
             
         });

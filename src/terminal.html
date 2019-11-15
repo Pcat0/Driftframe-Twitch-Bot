@@ -1,0 +1,19 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <input type="text" name="termIn" id="termIn" size="50" autofocus>
+        <script>
+            const {ipcRenderer} = require('electron'); 
+            const input = document.getElementById("termIn");
+
+            input.addEventListener("keydown", event => {
+                if(event.keyCode == 13) {
+                    ipcRenderer.send('term:line', input.value);
+                    input.value = '';
+                }
+            });
+        </script>
+    </body>
+</html>
