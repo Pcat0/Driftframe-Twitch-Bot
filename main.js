@@ -1,7 +1,9 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
 
+
 const _IconPath = path.join(__dirname, 'assets', 'icons');
+const _RendererPath = path.join(__dirname, 'src', 'renderer');
 
 var mainWindow;
 var terminalWindow;
@@ -82,7 +84,7 @@ function createMainWindow() {
     });
 
 
-    window.loadFile('src/main.html');
+    window.loadFile(path.join(_RendererPath, "main.html"));
 
     //Quit app when closed
     window.on('close', app.quit);
@@ -120,7 +122,7 @@ function toggleTermalWindow() {
         terminalWindow.on('closed', () => {
             terminalWindow = null;
         });
-        terminalWindow.loadFile("src/terminal.html");
+        terminalWindow.loadFile(path.join(_RendererPath, "terminal.html"));
     } else {
         terminalWindow.close();
     }
