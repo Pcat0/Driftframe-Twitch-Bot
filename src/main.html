@@ -1,57 +1,104 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="queue.css">
         <meta charset="UTF-8">
         <title>Driftframe twitch bot</title>
         <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
         <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     </head>
     <body>
-        <ul id="racerList" style="list-style-type:none;">
-            <li>
-                <div>
-                    <H2>Racer List</H2>
-                </div>
-            </li>
-            <li>
-                <div>
-                    <p>You</p>
-                </div>
-            </li>
-            <li slot = "1">
-                <div>
-                    <p></p>
-                </div>
-            </li>
-            <li slot = "2">
-                <div>
-                    <p></p>
-                </div>
-            </li>
-            <li slot = "3">
-                <div>
-                    <p></p>
-                </div>
-            </li>
-        </ul>
-    </body>
-    <script>
-        const {ipcRenderer} = require('electron'); 
-
-        const racerListEl = document.getElementById("racerList");
-        
-        
-        
-        ipcRenderer.on("updateList", function(event, racers) {
-            //TODO: improve alot
-            for(let i = 0; i < 3; i++){
-                let slot = racerListEl.querySelector(`[slot="${i+1}"]`);
-                let racer = racers[i];
-                slot.innerHTML = `<div><p>${racer ? racer.tName : '<i>Open</i>'}</p></div>`
-            }
+        <h3>Racer List</h3>
+        <div id="racerListEl" class="queue" controls="kick remove"></div>
+        <h3>Queue</h3>
+        <div id="queueList" class="queue" controls="kick add"></div>
+        <script>
+            const {ipcRenderer} = require('electron'); 
+    
+            const racerListEl = document.getElementById("racerList");
+            const queueListEl = document.getElementById("queueList");
             
-        });
-        
-        ipcRenderer.send("queue:next");
-    </script>
+            const queueControls = [
+                {
+                    action: "kick",
+                    label: "kick",
+                    click(event) { 
+                        console.log(this);
+                        console.log(event);
+                    }
+                },
+                {
+                    action: "add",
+                    label: "Add",
+                    click(event) { 
+                        console.log(this);
+                        console.log(event);
+                    }
+                },
+                {
+                    action: "remove",
+                    label: "Remove",
+                    click(event) { 
+                        console.log(this);
+                        console.log(event);
+                    }
+                },
+            ];
+
+            function newQueueItem(position, tname, ign) {
+                var template = document.createElement('template');
+                template.innerHTML = `
+                <div class="racer" style="order: ${position};">
+                    <div class="player-name">
+                        <div class="ign">${ign}</div>
+                        <div class="twitch-name">${tname}</div>
+                    </div>
+                    <div class="queue-controls">
+                    </div>
+                </div>`.trim();
+                var newItem = template.content.firstChild;
+                var controls = newItem.querySelector(".queue-controls");
+                for (const control of queueControls) {
+                    let button = document.createElement("button");
+                    button.setAttribute("btaction", control.action);
+                    button.innerHTML = control.label;
+                    button.onclick = control.click.bind({position: position, ign: ign, tname: tname, button: button});
+                    controls.appendChild(button);
+                }
+                return newItem;
+            }
+
+            ipcRenderer.on("update:list", function(event, racers) {
+                //TODO: improve alot
+                for(let i = 0; i < 3; i++){
+                    let slot = racerListEl.querySelector(`[slot="${i+1}"]`);
+                    let racer = racers[i];
+                    slot.innerHTML = `<div><p>${racer ? racer.tName : '<i>Open</i>'}</p></div>`
+                }
+                
+            });
+
+            ipcRenderer.on("update:queue", function(event, racers) {
+                //TODO: Look into requesting an animation frame
+                while (queueListEl.firstChild) {
+                    queueListEl.removeChild(queueListEl.firstChild);
+                }
+                racers.forEach(racer => {
+                    queueListEl.appendChild(newQueueItem(1, racer.tName, racer.ign));
+                });
+            });
+            
+            ipcRenderer.send("queue:next");
+        </script>
+    </body>
+    
 </html>
+<!-- <button onClick="btaAdd" btaction='kick'>
+        Kick
+    </button>
+    <button btaction='add'>
+        Add
+    </button>
+    <button btaction='remove'>
+        Remove
+    </button> -->

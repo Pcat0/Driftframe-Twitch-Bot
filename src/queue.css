@@ -1,0 +1,41 @@
+.queue {
+    display: flex;
+    flex-direction: column;
+    margin: -2px 30px;
+}
+.queue div.queue-controls>button{
+    display: none;
+}
+.queue[controls~=add] div.queue-controls>button[btaction~=add]{
+    display: inline;
+}
+.queue[controls~=kick] div.queue-controls>button[btaction~=kick]{
+    display: inline;
+}
+.queue[controls~=remove] div.queue-controls>button[btaction~=remove]{
+    display: inline;
+}
+.racer {
+    order: attr(position integer);
+    display: flex;
+    justify-content: space-between;
+    background-color:dodgerblue;
+    align-items: center;
+    margin: 2px 0 ;
+    padding: 2px 10px;
+}
+
+.player-name {         
+    font-size:15px
+}
+
+.ign {
+    font-size: 25px;
+}
+.queue-controls {
+    align-items: stretch;
+}
+.queue-controls > button {
+    height: 40px;
+    min-width: 40px;
+}
