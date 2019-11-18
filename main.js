@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
+const Queue = require('./src/js/queue.js');
 
 
 const _IconPath = path.join(__dirname, 'assets', 'icons');
@@ -9,29 +10,18 @@ var mainWindow;
 var terminalWindow;
 
 //TODO: move in to module
-var raceQueue = [];
-function add(racer) {
-    raceQueue.push(racer);
-    console.log(raceQueue)
-    updateQueue();
-}
-//TODO: unhack
-function updateList() {
-    mainWindow.webContents.send("updateList", raceQueue.slice(0, 4));
-}
-
-function updateQueue() {
-    mainWindow.webContents.send("update:queue", raceQueue.slice(0, 10));
-}
+var raceQueue = new Queue();
+raceQueue.on("change", function (type, index, item){
+    if(index < 10){
+        mainWindow.webContents.send("update:queue", this.queue.slice(0, 10).map(el=>el.data));
+    }
+});
 
 function Racer(tName, ign) {
     this.tName = tName;
     this.ign = ign;
 }
 
-ipcMain.on("queue:next", function (event) {
-    event.reply("updateList", raceQueue.slice(0, 4));
-});
 
 
 
@@ -98,7 +88,7 @@ app.on('ready', function () {
     Menu.setApplicationMenu(mainMenu);
 
     mainWindow = createMainWindow();
-    
+    console.log(Queue);
 
 
 });
@@ -131,7 +121,7 @@ ipcMain.on('term:line', function(event, line){
     var [command, ...args] = line.split(' ');
     switch (command) {
         case "add":
-            add(new Racer(args[0], args[1]));
+            raceQueue.add(args[0], new Racer(args[0], args[1]));
             break;
         case "remove":
             raceQueue.splice(args[0], args[0]);
