@@ -18,7 +18,7 @@
             const racerListEl = document.getElementById("racerList");
             const queueListEl = document.getElementById("queueList");
             
-            const queueControls =[
+            const queueControls = [
                 {
                     action: "kick",
                     label: "kick",
@@ -28,7 +28,7 @@
                     }
                 },
                 {
-                    action: "Add",
+                    action: "add",
                     label: "Add",
                     click(event) { 
                         console.log(this);
@@ -36,16 +36,16 @@
                     }
                 },
                 {
-                    action: "Remove",
+                    action: "remove",
                     label: "Remove",
                     click(event) { 
                         console.log(this);
                         console.log(event);
                     }
                 },
-            ]
+            ];
 
-            function newQueueItem(position, ign, tname) {
+            function newQueueItem(position, tname, ign) {
                 var template = document.createElement('template');
                 template.innerHTML = `
                 <div class="racer" style="order: ${position};">
@@ -67,7 +67,7 @@
                 }
                 return newItem;
             }
-            
+
             ipcRenderer.on("updateList", function(event, racers) {
                 //TODO: improve alot
                 for(let i = 0; i < 3; i++){
@@ -76,6 +76,16 @@
                     slot.innerHTML = `<div><p>${racer ? racer.tName : '<i>Open</i>'}</p></div>`
                 }
                 
+            });
+
+            ipcRenderer.on("update:queue", function(event, racers) {
+                //TODO: Look into requesting an animation frame
+                while (queueListEl.firstChild) {
+                    queueListEl.removeChild(queueListEl.firstChild);
+                }
+                racers.forEach(racer => {
+                    queueListEl.appendChild(newQueueItem(1, racer.tName, racer.ign));
+                });
             });
             
             ipcRenderer.send("queue:next");

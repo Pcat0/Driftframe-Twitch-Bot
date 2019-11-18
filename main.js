@@ -6,17 +6,21 @@ const _IconPath = path.join(__dirname, 'assets', 'icons');
 var mainWindow;
 var terminalWindow;
 
-//TODO: add handler functions
+//TODO: move in to module
 var raceQueue = [];
 function add(racer) {
     raceQueue.push(racer);
     console.log(raceQueue)
-    updateList();
+    updateQueue();
 }
+//TODO: unhack
 function updateList() {
     mainWindow.webContents.send("updateList", raceQueue.slice(0, 4));
 }
 
+function updateQueue() {
+    mainWindow.webContents.send("update:queue", raceQueue.slice(0, 10));
+}
 
 function Racer(tName, ign) {
     this.tName = tName;
@@ -122,6 +126,17 @@ function toggleTermalWindow() {
     }
 }
 ipcMain.on('term:line', function(event, line){
-    var [name, ign] = line.split(' ');
-    add(new Racer(name, ign));
+    var [command, ...args] = line.split(' ');
+    switch (command) {
+        case "add":
+            add(new Racer(args[0], args[1]));
+            break;
+        case "remove":
+            raceQueue.splice(args[0], args[0]);
+            updateQueue();
+            break;
+        default:
+            break;
+    }
+    
 });
