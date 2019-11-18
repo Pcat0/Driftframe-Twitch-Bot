@@ -4,28 +4,30 @@ const path = require('path');
 const _IconPath = path.join(__dirname, 'assets', 'icons');
 const _RendererPath = path.join(__dirname, 'src', 'renderer');
 
+const QUEUE_BUBBLE_LENGTH = 10;
+
 var mainWindow;
 var terminalWindow;
 
-//TODO: move in to module
-var raceQueue = [];
-function add(racer) {
-    raceQueue.push(racer);
-    console.log(raceQueue)
-    updateQueue();
-}
-//TODO: unhack
-function updateList() {
-    mainWindow.webContents.send("updateList", raceQueue.slice(0, 4));
-}
+var raceQueue = new Proxy([], {
+    set(queue, name, value){
+        queue[name] = value;
+        var bubble = [];
+        for (let i = 0; i < queue.length && bubble.length <= QUEUE_BUBBLE_LENGTH; i++) {
+            const racer = queue[i];
+            if(!racer.inRace)
+                bubble.push(racer);
+        }
 
-function updateQueue() {
-    mainWindow.webContents.send("update:queue", raceQueue.slice(0, 10));
-}
+        mainWindow.webContents.send("update:queue", bubble);
+        return true;
+    }
+});
 
-function Racer(tName, ign) {
-    this.tName = tName;
+function Racer(twichName, ign) {
+    this.twitchName = twichName;
     this.ign = ign;
+    this.inRace = false;
 }
 
 ipcMain.on("queue:next", function (event) {
@@ -130,11 +132,10 @@ ipcMain.on('term:line', function(event, line){
     var [command, ...args] = line.split(' ');
     switch (command) {
         case "add":
-            add(new Racer(args[0], args[1]));
+            raceQueue.push(new Racer(args[0], args[1]));
             break;
         case "remove":
             raceQueue.splice(args[0], args[0]);
-            updateQueue();
             break;
         default:
             break;

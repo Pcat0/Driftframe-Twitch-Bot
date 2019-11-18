@@ -45,13 +45,13 @@
                 },
             ];
 
-            function newQueueItem(position, tname, ign) {
+            function newQueueItem(position, twitchName, ign) {
                 var template = document.createElement('template');
                 template.innerHTML = `
                 <div class="racer" style="order: ${position};">
                     <div class="player-name">
                         <div class="ign">${ign}</div>
-                        <div class="twitch-name">${tname}</div>
+                        <div class="twitch-name">${twitchName}</div>
                     </div>
                     <div class="queue-controls">
                     </div>
@@ -62,7 +62,7 @@
                     let button = document.createElement("button");
                     button.setAttribute("btaction", control.action);
                     button.innerHTML = control.label;
-                    button.onclick = control.click.bind({position: position, ign: ign, tname: tname, button: button});
+                    button.onclick = control.click.bind({position: position, ign: ign, twitchName: twitchName, button: button});
                     controls.appendChild(button);
                 }
                 return newItem;
@@ -73,7 +73,7 @@
                 for(let i = 0; i < 3; i++){
                     let slot = racerListEl.querySelector(`[slot="${i+1}"]`);
                     let racer = racers[i];
-                    slot.innerHTML = `<div><p>${racer ? racer.tName : '<i>Open</i>'}</p></div>`
+                    slot.innerHTML = `<div><p>${racer ? racer.twitchName : '<i>Open</i>'}</p></div>`
                 }
                 
             });
@@ -84,7 +84,7 @@
                     queueListEl.removeChild(queueListEl.firstChild);
                 }
                 racers.forEach(racer => {
-                    queueListEl.appendChild(newQueueItem(1, racer.tName, racer.ign));
+                    queueListEl.appendChild(newQueueItem(1, racer.twitchName, racer.ign));
                 });
             });
             
