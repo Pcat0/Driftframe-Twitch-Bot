@@ -68,7 +68,7 @@
                 return newItem;
             }
 
-            ipcRenderer.on("updateList", function(event, racers) {
+            ipcRenderer.on("update:list", function(event, racers) {
                 //TODO: improve alot
                 for(let i = 0; i < 3; i++){
                     let slot = racerListEl.querySelector(`[slot="${i+1}"]`);
